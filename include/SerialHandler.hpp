@@ -13,10 +13,16 @@ class SerialHandler : public PortHandler {
         serial_ = std::make_unique<SerialPort>(port_, baudRate_);
     }
 
-    bool open() override;
-    void close() override;
-    void write(const std::string& data) override;
-    std::string read() override;
+    bool open() override { return serial_->open(); }
+    void close() override { serial_->close(); }
+    void write(const std::string& data) override {
+        std::lock_guard<std::mutex> lock(serial_mutex_);
+        serial_->write(data);
+    }
+    std::string read() override {
+        std::lock_guard<std::mutex> lock(serial_mutex_);
+        return serial_->read();
+    }
 
    private:
     std::unique_ptr<SerialPort> serial_;
@@ -24,17 +30,3 @@ class SerialHandler : public PortHandler {
     std::string port_;
     int baudRate_;
 };
-
-bool SerialHandler::open() { return serial_->open(); }
-
-void SerialHandler::close() { serial_->close(); }
-
-void SerialHandler::write(const std::string& data) {
-    std::lock_guard<std::mutex> lock(serial_mutex_);
-    serial_->write(data);
-}
-
-std::string SerialHandler::read() {
-    std::lock_guard<std::mutex> lock(serial_mutex_);
-    return serial_->read();
-}
