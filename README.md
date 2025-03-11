@@ -1,13 +1,13 @@
-# class-cpp-container-template
+# mutex-cpp-container
 
 ## Build
 
 ```zsh
-docker build -t simple-class-cpp .
+docker build -t mutex-cpp .
 ```
 
 ## Run
 
 ```zsh
-docker run --rm simple-class-cpp
+docker run --rm mutex-cpp
 ```
